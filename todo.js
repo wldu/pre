@@ -13,6 +13,7 @@ const View = (() => {
     }
     const createTmp = (dataList) => {
         let template = '';
+        // here is the one item behind issue: previous I use data, instead of dataList
         dataList.forEach(todo => {
             template += `<li>${todo.title}</li>`;
         });
