@@ -6,10 +6,14 @@ const data = [
 ];
 
 const View = (() => {
-    const container = document.querySelector("#todolist_container");
+    const dom = {
+        container: document.querySelector("#todolist_container"),
+        userInput: document.querySelector("#user-input"),
+        btn: document.querySelector("#add-btn")
+    }
     const createTmp = (dataList) => {
         let template = '';
-        data.forEach(todo => {
+        dataList.forEach(todo => {
             template += `<li>${todo.title}</li>`;
         });
         return template;
@@ -18,22 +22,22 @@ const View = (() => {
     const render = (elem, template)=> {
         elem.innerHTML = template;
     };
-    return {container, createTmp, render};
+    return {dom, createTmp, render};
 })();
 
 
 const Model = ((view)=>{
-    const {container, createTmp, render} = view;
+    const {dom, createTmp, render} = view;
 
     class Todos {
-        #todoList
+        #todoList;
         constructor() {
             this.#todoList = [];
         }
         set newList(newTodos) {
             this.#todoList = newTodos;
             const template = createTmp(newTodos);
-            render(container, template);
+            render(dom.container, template);
         }
         get getTodos() {
             return this.#todoList;
@@ -44,25 +48,34 @@ const Model = ((view)=>{
 
 
 
-const Controller = ((model)=>{
+const Controller = ((model, view)=>{
     const {Todos} = model;
+    const {dom} = view;
     const todoList = new Todos();
     // initialized data
     todoList.newList = data;
 
-    // add a new todo
-    const userInput = document.querySelector("#user-input");
-    const btn = document.querySelector("#add-btn")
-    btn.addEventListener("click", ()=> {
-        const obj = {title: userInput.value, id: data.length};
-        // update todo list
-        todoList.newList = [...data, obj];
-        data.push(obj);
-        userInput.value = '';
-        // console.log(userInput.value);
-    });
-})(Model);
+    const init = () => {
+        todoList.newList = data;
+    }
+    const addTodo = () => {
+        dom.btn.addEventListener("click", ()=> {
+            const obj = {title: dom.userInput.value, id: data.length - 1};
+            // update todo list
+            todoList.newList = [...data, obj];
+            data.push(obj);
+            dom.userInput.value = '';
+            // console.log(userInput.value);
+        });
+    }    
+    const bootstrap = () => {
+        init(),
+        addTodo()
+    }
+    return {bootstrap};
+})(Model, View);
 
+Controller.bootstrap();
 
 
 // MVC: 
