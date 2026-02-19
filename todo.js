@@ -47,8 +47,21 @@ const Model = ((view)=>{
 const Controller = ((model)=>{
     const {Todos} = model;
     const todoList = new Todos();
+    // initialized data
     todoList.newList = data;
-})(Model)
+
+    // add a new todo
+    const userInput = document.querySelector("#user-input");
+    const btn = document.querySelector("#add-btn")
+    btn.addEventListener("click", ()=> {
+        const obj = {title: userInput.value, id: data.length};
+        // update todo list
+        todoList.newList = [...data, obj];
+        data.push(obj);
+        userInput.value = '';
+        // console.log(userInput.value);
+    });
+})(Model);
 
 
 
